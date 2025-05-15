@@ -68,10 +68,10 @@ Future<void> main() async {
     if (Platform.isAndroid) {
       await Firebase.initializeApp(
           options: const FirebaseOptions(
-              apiKey: "current_key here",
-              projectId: "project_id here",
-              messagingSenderId: "project_number here",
-              appId: "mobilesdk_app_id here"));
+              apiKey: "AIzaSyDOE2SfiG5y4YKEicXG6HqVDZBTGgGhX6E",
+              projectId: "abou-tabl",
+              messagingSenderId: "567628625639",
+              appId: "1:567628625639:android:a2e4d11e11d6d906639442"));
     } else {
       await Firebase.initializeApp();
     }
