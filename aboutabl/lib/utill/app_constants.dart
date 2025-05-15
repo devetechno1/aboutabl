@@ -6,7 +6,7 @@ class AppConstants {
   static const String slogan = '';
   static const String appVersion = '14.8';
 
-  static const String baseUrl = 'https://ecomm.devetechno.co.uk';
+  static const String baseUrl = 'https://aboutabl.net';
   static const String userId = 'userId';
   static const String name = 'name';
   static const String blogsUri = '/api/v1/blog/categories';
