@@ -2,7 +2,7 @@ import 'package:flutter_sixvalley_ecommerce/localization/models/language_model.d
 import 'package:flutter_sixvalley_ecommerce/utill/images.dart';
 
 class AppConstants {
-  static const String appName = 'Master app';
+  static const String appName = 'ABOUTABL';
   static const String slogan = '';
   static const String appVersion = '14.8';
 
