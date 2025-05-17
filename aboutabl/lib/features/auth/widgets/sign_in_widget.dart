@@ -140,6 +140,7 @@ class SignInWidgetState extends State<SignInWidget> {
                         //isShowPrefixIcon: true,
                         //prefixIconColor: Theme.of(context).primaryColor,
                         isShowBorder: true,
+                        padding: EdgeInsets.zero,
                         focusNode: _emailNumberFocus,
                         nextFocus: _passwordFocus,
                         controller: _emailPhoneController,

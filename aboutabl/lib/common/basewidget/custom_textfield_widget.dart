@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sixvalley_ecommerce/common/basewidget/custom_asset_image_widget.dart';
-import 'package:flutter_sixvalley_ecommerce/helper/responsive_helper.dart';
 import 'package:flutter_sixvalley_ecommerce/theme/controllers/theme_controller.dart';
 import 'package:flutter_sixvalley_ecommerce/utill/custom_themes.dart';
 import 'package:flutter_sixvalley_ecommerce/utill/dimensions.dart';
@@ -53,10 +52,11 @@ class CustomTextFieldWidget extends StatefulWidget {
   final bool isToolTipSuffix;
   final String? toolTipMessage;
   final GlobalKey? toolTipKey;
+  final EdgeInsetsGeometry padding;
 
   const CustomTextFieldWidget(
       {super.key,
-      this.hintText = 'Write something...',
+      this.hintText = '',
       this.controller,
       this.focusNode,
       this.titleText,
@@ -98,6 +98,7 @@ class CustomTextFieldWidget extends StatefulWidget {
       this.isShowBorder = false,
       this.isToolTipSuffix = false,
       this.toolTipMessage,
+      this.padding = const EdgeInsetsDirectional.only(start: Dimensions.paddingSizeSmall),
       this.toolTipKey});
 
   @override
@@ -269,47 +270,41 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                     )
                   : widget.showCodePicker
                       ? Padding(
-                          padding: EdgeInsets.only(
-                              left: widget.isShowBorder == true ? 10 : 0),
-                          child: SizedBox(
-                              width: ResponsiveHelper.isTab(context) ? 120 : 90,
-                              child: Row(
-                                children: [
-                                  CodePickerWidget(
-                                    padding: const EdgeInsets.only(
-                                        left: Dimensions.paddingSizeSmall),
-                                    flagWidth: 25,
-                                    onChanged: widget.onCountryChanged,
-                                    initialSelection: widget.countryDialCode,
-                                    favorite: [
-                                      widget.countryDialCode != null
-                                          ? widget.countryDialCode!
-                                          : 'BD'
-                                    ],
-                                    showDropDownButton: true,
-                                    showCountryOnly: false,
-                                    showOnlyCountryWhenClosed: false,
-                                    showFlagDialog: true,
-                                    hideMainText: false,
-                                    showFlagMain: false,
-                                    dialogBackgroundColor:
-                                        Theme.of(context).cardColor,
-                                    barrierColor:
-                                        Provider.of<ThemeController>(context)
-                                                .darkTheme
-                                            ? Colors.black.withOpacity(0.4)
-                                            : null,
-                                    textStyle: textRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge!
-                                          .color,
-                                    ),
-                                  ),
-                                  // Text(widget.countryDialCode??'', style: textRegular.copyWith(fontSize: Dimensions.fontSizeDefault),),
-                                ],
-                              )),
+                          padding: EdgeInsetsDirectional.only(
+                            start: widget.isShowBorder == true ? 10 : 0,
+                            end: widget.isShowBorder == true ? 10 : 0,
+                          ),
+                          child: CodePickerWidget(
+                            padding: widget.padding,
+                            flagWidth: 25,
+                            onChanged: widget.onCountryChanged,
+                            initialSelection: widget.countryDialCode,
+                            favorite: [
+                              widget.countryDialCode != null
+                                  ? widget.countryDialCode!
+                                  : 'BD'
+                            ],
+                            showDropDownButton: true,
+                            showCountryOnly: false,
+                            showOnlyCountryWhenClosed: false,
+                            showFlagDialog: true,
+                            hideMainText: false,
+                            showFlagMain: false,
+                            dialogBackgroundColor:
+                                Theme.of(context).cardColor,
+                            barrierColor:
+                                Provider.of<ThemeController>(context)
+                                        .darkTheme
+                                    ? Colors.black.withOpacity(0.4)
+                                    : null,
+                            textStyle: textRegular.copyWith(
+                              fontSize: Dimensions.fontSizeLarge,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .color,
+                            ),
+                          ),
                         )
                       : null,
               suffixIcon: widget.isToolTipSuffix
@@ -329,73 +324,68 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                             height: 25,
                           )),
                     )
-                  : InkWell(
-                      onTap: () {
-                        print("===Hello==2==");
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          widget.suffixIcon2 != null
-                              ? SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          Dimensions.paddingSizeExtraSmall),
-                                      child: InkWell(
-                                        onTap: widget.suffix2OnTap,
-                                        child: Image.asset(widget.suffixIcon2!),
-                                      )))
+                  : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      widget.suffixIcon2 != null
+                          ? SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Padding(
+                                  padding: const EdgeInsets.all(
+                                      Dimensions.paddingSizeExtraSmall),
+                                  child: InkWell(
+                                    onTap: widget.suffix2OnTap,
+                                    child: Image.asset(widget.suffixIcon2!),
+                                  )))
+                          : const SizedBox.shrink(),
+                      widget.isPassword
+                          ? IconButton(
+                              icon: Icon(
+                                  _obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.5)),
+                              onPressed: _toggle)
+                          : widget.suffixIcon != null
+                              ? Row(
+                                  children: [
+                                    const SizedBox(
+                                        width: Dimensions
+                                            .paddingSizeExtraSmall),
+                                    SizedBox(
+                                        width: 35,
+                                        height: 35,
+                                        child: Padding(
+                                          padding: const EdgeInsetsDirectional.only(
+                                            top: Dimensions
+                                                .paddingSizeExtraExtraSmall,
+                                            start: Dimensions
+                                                .paddingSizeExtraExtraSmall,
+                                            bottom: Dimensions
+                                                .paddingSizeExtraExtraSmall,
+                                            end:
+                                                Dimensions.paddingSizeSmall,
+                                          ),
+                                          child: InkWell(
+                                              onTap: widget.suffixOnTap,
+                                              child: Image.asset(
+                                                  widget.suffixIcon!,
+                                                  color:
+                                                      widget.suffixColor ??
+                                                          Theme.of(context)
+                                                              .hintColor)),
+                                        )),
+                                    const SizedBox(
+                                        width: Dimensions
+                                            .paddingSizeExtraSmall),
+                                  ],
+                                )
                               : const SizedBox.shrink(),
-                          widget.isPassword
-                              ? IconButton(
-                                  icon: Icon(
-                                      _obscureText
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Theme.of(context)
-                                          .hintColor
-                                          .withOpacity(0.5)),
-                                  onPressed: _toggle)
-                              : widget.suffixIcon != null
-                                  ? Row(
-                                      children: [
-                                        const SizedBox(
-                                            width: Dimensions
-                                                .paddingSizeExtraSmall),
-                                        SizedBox(
-                                            width: 35,
-                                            height: 35,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: Dimensions
-                                                    .paddingSizeExtraExtraSmall,
-                                                left: Dimensions
-                                                    .paddingSizeExtraExtraSmall,
-                                                bottom: Dimensions
-                                                    .paddingSizeExtraExtraSmall,
-                                                right:
-                                                    Dimensions.paddingSizeSmall,
-                                              ),
-                                              child: InkWell(
-                                                  onTap: widget.suffixOnTap,
-                                                  child: Image.asset(
-                                                      widget.suffixIcon!,
-                                                      color:
-                                                          widget.suffixColor ??
-                                                              Theme.of(context)
-                                                                  .hintColor)),
-                                            )),
-                                        const SizedBox(
-                                            width: Dimensions
-                                                .paddingSizeExtraSmall),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-                        ],
-                      ),
-                    ),
+                    ],
+                  ),
             ),
             onFieldSubmitted: (text) => widget.nextFocus != null
                 ? FocusScope.of(context).requestFocus(widget.nextFocus)

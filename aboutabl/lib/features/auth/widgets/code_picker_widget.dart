@@ -174,7 +174,7 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
                   width: 25,
                   child: Image.asset(
                     widget.fromCountryList ? Images.country : Images.callIcon,
-                    color: Theme.of(context).primaryColor.withOpacity(.6),
+                    color: Theme.of(context).primaryColor,
                   )),
               SizedBox(
                   width: widget.fromCountryList
@@ -192,8 +192,8 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
                         : Clip.hardEdge,
                     decoration: widget.flagDecoration,
                     margin: widget.alignLeft
-                        ? const EdgeInsets.only(right: 16.0, left: 8.0)
-                        : const EdgeInsets.only(right: 16.0),
+                        ? const EdgeInsetsDirectional.only(end: 16.0, start: 8.0)
+                        : const EdgeInsetsDirectional.only(end: 16.0),
                     child: Image.asset(
                       selectedItem!.flagUri!,
                       package: 'country_code_picker',
