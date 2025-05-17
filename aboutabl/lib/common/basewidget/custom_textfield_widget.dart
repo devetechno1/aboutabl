@@ -272,7 +272,7 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
                       ? Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: widget.isShowBorder == true ? 10 : 0,
-                            end: widget.isShowBorder == true ? 10 : 0,
+                            end: 10,
                           ),
                           child: CodePickerWidget(
                             padding: widget.padding,

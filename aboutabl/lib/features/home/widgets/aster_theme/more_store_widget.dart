@@ -86,7 +86,7 @@ class _MoreStoreWidgetState extends State<MoreStoreWidget> {
                 Center(
                   child: Container(
                       width: MediaQuery.of(context).size.width / 6.6,
-                      height: MediaQuery.of(context).size.width / 6.6,
+                      height: MediaQuery.of(context).size.width / 8,
                       decoration: BoxDecoration(
                         border: Border.all(
                             color: Theme.of(context)
