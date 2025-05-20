@@ -60,6 +60,21 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+@pragma('vm:entry-point')
+Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
+  if (kDebugMode) {
+    print(
+        "onBackground: ${message.notification!.title}/${message.notification!.body}/${message.notification!.titleLocKey}");
+  }
+  // var androidInitialize = new AndroidInitializationSettings('notification_icon');
+  // var iOSInitialize = new IOSInitializationSettings();
+  // var initializationsSettings = new InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
+  // NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, true);
+}
+
+
 Future<void> main() async {
   if(kDebugMode) HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,28 +88,14 @@ Future<void> main() async {
               messagingSenderId: "567628625639",
               appId: "1:567628625639:android:a2e4d11e11d6d906639442"));
     } else if(Platform.isIOS) {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-              apiKey: "AIzaSyBYv0KT7joicbFhOYuGAavNdX_StUiD73k",
-              projectId: "abou-tabl",
-              messagingSenderId: "567628625639",
-              appId: "1:567628625639:ios:0d6d021c2f82b8d4639442",
-              iosBundleId: "com.aboutabl",
-              storageBucket: "abou-tabl.firebasestorage.app",
-
-            )
-      );
+      await Firebase.initializeApp();
     }else {
       await Firebase.initializeApp();
     }
   }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await di.init();
-
-  flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.requestNotificationsPermission();
+  await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
 
   NotificationBody? body;
   try {
@@ -103,11 +104,10 @@ Future<void> main() async {
     if (remoteMessage != null) {
       body = NotificationHelper.convertNotification(remoteMessage.data);
     }
-    await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-    FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+    // await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+    // FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   } catch (_) {}
 
-  await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
 
   runApp(MultiProvider(

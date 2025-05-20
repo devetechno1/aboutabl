@@ -74,5 +74,5 @@ end
 
 target 'ImageNotification' do
   use_frameworks!
-  pod 'Firebase/Messaging', '~> 11.10.0'
+  pod 'Firebase/Messaging'
 end

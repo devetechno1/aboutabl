@@ -29,15 +29,26 @@ class NotificationHelper {
 
   static Future<void> initialize(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+   final x =  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()?.requestPermissions(sound: true);
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    
+
+
     var androidInitialize =
         const AndroidInitializationSettings('notification_icon');
     var iOSInitialize = const DarwinInitializationSettings();
     var initializationsSettings =
         InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+        
     flutterLocalNotificationsPlugin.initialize(initializationsSettings,
         onDidReceiveNotificationResponse: (NotificationResponse load) async {
       try {
@@ -118,11 +129,9 @@ class NotificationHelper {
           Navigator.of(Get.context!).pushReplacement(
               MaterialPageRoute(builder: (_) => const DashBoardScreen()));
         }
-      }
+      }else{
 
-      if (message.data['type'] != 'maintenance_mode') {
-        NotificationHelper.showNotification(
-            message, flutterLocalNotificationsPlugin, false);
+        await NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, false);
       }
     });
 
@@ -206,57 +215,54 @@ class NotificationHelper {
     });
   }
 
-  static Future<void> showNotification(RemoteMessage message,
-      FlutterLocalNotificationsPlugin fln, bool data) async {
-    if (!Platform.isIOS) {
+  static Future<void> showNotification(RemoteMessage message, FlutterLocalNotificationsPlugin fln, bool data) async {
       String? title;
       String? body;
       String? orderID;
       String? image;
       NotificationBody notificationBody = convertNotification(message.data);
-      if (data) {
-        title = message.data['title'];
-        body = message.data['body'];
-        orderID = message.data['order_id'];
-        image = (message.data['image'] != null &&
-                message.data['image'].isNotEmpty)
-            ? message.data['image'].startsWith('http')
-                ? message.data['image']
-                : '${AppConstants.baseUrl}/storage/app/public/notification/${message.data['image']}'
+    if (data) {
+      title = message.data['title'];
+      body = message.data['body'];
+      orderID = message.data['order_id'];
+      image = (message.data['image'] != null &&
+              message.data['image'].isNotEmpty)
+          ? message.data['image'].startsWith('http')
+              ? message.data['image']
+              : '${AppConstants.baseUrl}/storage/app/public/notification/${message.data['image']}'
+          : null;
+    } else {
+      title = message.notification!.title;
+      body = message.notification!.body;
+      orderID = message.notification!.titleLocKey;
+      if (Platform.isAndroid) {
+        image = (message.notification!.android!.imageUrl != null &&
+                message.notification!.android!.imageUrl!.isNotEmpty)
+            ? message.notification!.android!.imageUrl!.startsWith('http')
+                ? message.notification!.android!.imageUrl
+                : '${AppConstants.baseUrl}/storage/app/public/notification/${message.notification!.android!.imageUrl}'
             : null;
-      } else {
-        title = message.notification!.title;
-        body = message.notification!.body;
-        orderID = message.notification!.titleLocKey;
-        if (Platform.isAndroid) {
-          image = (message.notification!.android!.imageUrl != null &&
-                  message.notification!.android!.imageUrl!.isNotEmpty)
-              ? message.notification!.android!.imageUrl!.startsWith('http')
-                  ? message.notification!.android!.imageUrl
-                  : '${AppConstants.baseUrl}/storage/app/public/notification/${message.notification!.android!.imageUrl}'
-              : null;
-        } else if (Platform.isIOS) {
-          image = (message.notification!.apple!.imageUrl != null &&
-                  message.notification!.apple!.imageUrl!.isNotEmpty)
-              ? message.notification!.apple!.imageUrl!.startsWith('http')
-                  ? message.notification!.apple!.imageUrl
-                  : '${AppConstants.baseUrl}/storage/app/public/notification/${message.notification!.apple!.imageUrl}'
-              : null;
-        }
+      } else if (Platform.isIOS) {
+        image = (message.notification!.apple!.imageUrl != null &&
+                message.notification!.apple!.imageUrl!.isNotEmpty)
+            ? message.notification!.apple!.imageUrl!.startsWith('http')
+                ? message.notification!.apple!.imageUrl
+                : '${AppConstants.baseUrl}/storage/app/public/notification/${message.notification!.apple!.imageUrl}'
+            : null;
       }
+    }
 
-      if (image != null && image.isNotEmpty) {
-        try {
-          await showBigPictureNotificationHiddenLargeIcon(
-              title, body, orderID, notificationBody, image, fln);
-        } catch (e) {
-          await showBigTextNotification(
-              title, body!, orderID, notificationBody, fln);
-        }
-      } else {
+    if (image != null && image.isNotEmpty) {
+      try {
+        await showBigPictureNotificationHiddenLargeIcon(
+            title, body, orderID, notificationBody, image, fln);
+      } catch (e) {
         await showBigTextNotification(
             title, body!, orderID, notificationBody, fln);
       }
+    } else {
+      await showBigTextNotification(
+          title, body!, orderID, notificationBody, fln);
     }
   }
 
@@ -268,15 +274,15 @@ class NotificationHelper {
       FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6valley',
-      '6valley',
+      'devetechno',
+      'devetechno',
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
       sound: RawResourceAndroidNotificationSound('notification'),
     );
     const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics,iOS: DarwinNotificationDetails());
     await fln.show(0, title, body, platformChannelSpecifics,
         payload: notificationBody != null
             ? jsonEncode(notificationBody.toJson())
@@ -297,8 +303,8 @@ class NotificationHelper {
     );
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6valley',
-      '6valley',
+      'devetechno',
+      'devetechno',
       importance: Importance.max,
       styleInformation: bigTextStyleInformation,
       priority: Priority.max,
@@ -306,7 +312,7 @@ class NotificationHelper {
       sound: const RawResourceAndroidNotificationSound('notification'),
     );
     NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics,iOS: const DarwinNotificationDetails());
     await fln.show(0, title, body, platformChannelSpecifics,
         payload: notificationBody != null
             ? jsonEncode(notificationBody.toJson())
@@ -334,8 +340,8 @@ class NotificationHelper {
     );
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      '6valley',
-      '6valley',
+      'devetechno',
+      'devetechno',
       largeIcon: FilePathAndroidBitmap(largeIconPath),
       priority: Priority.max,
       playSound: true,
@@ -344,7 +350,7 @@ class NotificationHelper {
       sound: const RawResourceAndroidNotificationSound('notification'),
     );
     final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics,iOS: const DarwinNotificationDetails());
     await fln.show(0, title, body, platformChannelSpecifics,
         payload: notificationBody != null
             ? jsonEncode(notificationBody.toJson())
@@ -376,18 +382,4 @@ class NotificationHelper {
           type: 'chatting', messageKey: data['message_key']);
     }
   }
-}
-
-@pragma('vm:entry-point')
-Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
-  if (kDebugMode) {
-    print(
-        "onBackground: ${message.notification!.title}/${message.notification!.body}/${message.notification!.titleLocKey}");
-  }
-  // var androidInitialize = new AndroidInitializationSettings('notification_icon');
-  // var iOSInitialize = new IOSInitializationSettings();
-  // var initializationsSettings = new InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
-  // NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, true);
 }
