@@ -2,7 +2,7 @@
 //  NotificationService.m
 //  ImageNotification
 //
-//  Created by abdelsalam elgouhary on 20/05/2025.
+//  Created by abdelsalam elgohary on 20/05/2025.
 //
 
 #import "NotificationService.h"
@@ -20,7 +20,7 @@
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
-
+    
     [[FIRMessaging extensionHelper] populateNotificationContent:self.bestAttemptContent withContentHandler:contentHandler];
 }
 

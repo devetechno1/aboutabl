@@ -17,7 +17,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>ABOUTABL</string>
+	<string>El Attar</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -42,16 +42,16 @@
 	<key>FacebookClientToken</key>
 	<string>cb35f1ec4b6240aad802c5c2b1cdc910</string>
 	<key>FacebookDisplayName</key>
-	<string>ABOUTABL</string>
+	<string>El Attar</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app need camera access for taking photo for user profile picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -87,6 +87,6 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Your location is required to get current location for add or update item</string>
+    <string>Your location is required to get current location for add or update item</string>
 </dict>
 </plist>
