@@ -12,7 +12,7 @@ class Category {
   List<Category>? _childes;
   bool? isSelected;
   bool? _showSubInHome;
-  bool _allChildesWithoutImage = true;
+  bool _anyChildContainImage = false;
   ImageFullUrl? _imageFullUrl;
 
   Category(
@@ -27,6 +27,7 @@ class Category {
       List<Category>? childes,
       this.isSelected,
       bool? showSubInHome,
+      bool anyChildContainImage = false,
       ImageFullUrl? imageFullUrl}) {
     _id = id;
     _name = name;
@@ -38,6 +39,7 @@ class Category {
     _updatedAt = updatedAt;
     _childes = childes;
     _showSubInHome = showSubInHome;
+    _anyChildContainImage = anyChildContainImage;
     _imageFullUrl = imageFullUrl;
   }
 
@@ -50,9 +52,10 @@ class Category {
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   List<Category>? get childes => _childes;
-  bool get allChildesWithoutImage => _allChildesWithoutImage;
+  bool get anyChildContainImage => _anyChildContainImage == true;
   bool? get showSubInHome => _showSubInHome;
   ImageFullUrl? get imageFullUrl => _imageFullUrl;
+  bool get hasImage => imageFullUrl?.path?.trim().isNotEmpty == true;
 
   Category.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
@@ -69,7 +72,7 @@ class Category {
       json['childes'].forEach((v) {
         final cat = Category.fromJson(v);
         _childes!.add(cat);
-        if (cat.imageFullUrl != null && cat.imageFullUrl?.path?.trim().isNotEmpty == true) _allChildesWithoutImage = false;
+        if (cat.hasImage) _anyChildContainImage = true;
       });
     }
     _imageFullUrl = json['icon_full_url'] != null
@@ -93,6 +96,7 @@ class CategoryModel extends Category {
     super.slug,
     List<SubCategory>? subCategory,
     super.updatedAt,
+    super.anyChildContainImage,
   }) : super(childes: subCategory);
 
   CategoryModel.fromJson(Map<String, dynamic> json) {
@@ -110,7 +114,7 @@ class CategoryModel extends Category {
       json['childes'].forEach((v) {
         final cat = Category.fromJson(v);
         _childes!.add(cat);
-        if (cat.imageFullUrl != null && cat.imageFullUrl?.path?.trim().isNotEmpty == true) _allChildesWithoutImage = false;
+        if (cat.hasImage) _anyChildContainImage = true;
       });
     }
     _imageFullUrl = json['icon_full_url'] != null
@@ -134,6 +138,7 @@ class SubCategory extends Category {
     super.slug,
     List<SubSubCategory>? subSubCategory,
     super.updatedAt,
+    super.anyChildContainImage,
   }) : super(childes: subSubCategory);
 }
 
@@ -150,5 +155,6 @@ class SubSubCategory extends Category {
     super.showSubInHome,
     super.slug,
     super.updatedAt,
+    super.anyChildContainImage,
   }) : super(childes: null);
 }

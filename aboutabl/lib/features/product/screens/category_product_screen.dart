@@ -178,7 +178,7 @@ class _CategoryProductScreenState extends State<_CategoryProductScreen> {
 
   Container categoryRow(CategoryProductController controller) {
     final List<Category> subCategories = controller.subCategories ?? [];
-    final bool catWithImage = !widget.category.allChildesWithoutImage;
+    final bool catWithImage = widget.category.anyChildContainImage;
     return Container(
       height: catWithImage ? (54 + MediaQuery.sizeOf(context).width / 6.5) : 54,
       decoration: const BoxDecoration(
