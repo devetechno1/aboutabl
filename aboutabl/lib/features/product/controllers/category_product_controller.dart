@@ -63,7 +63,7 @@ class CategoryProductController extends ChangeNotifier {
   //* --------------category----------------------------------------------------------------------
   late Category _category;
   late Category _pressedCategory;
-  late List<Category>? _subCategories;
+   List<Category>? _subCategories;
   Category get category => _category;
   List<Category>? get subCategories => _subCategories;
 
