@@ -29,7 +29,7 @@ ThemeData get dark {
     textTheme: const TextTheme(bodyLarge: TextStyle(color: Color(0xFFE9EEF4))),
     pageTransitionsTheme: const PageTransitionsTheme(builders: {
       TargetPlatform.android: ZoomPageTransitionsBuilder(),
-      TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       TargetPlatform.fuchsia: ZoomPageTransitionsBuilder(),
     }),
   );

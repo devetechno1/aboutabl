@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_sixvalley_ecommerce/data/datasource/remote/dio/dio_client.dart';
@@ -108,11 +109,11 @@ class AuthRepository implements AuthRepoInterface {
 
   Future<String?> _getDeviceToken() async {
     String? deviceToken;
-    // if (Platform.isIOS) {
-    //   deviceToken = await FirebaseMessaging.instance.getAPNSToken();
-    // } else {
+    if (Platform.isIOS) {
+      deviceToken = await FirebaseMessaging.instance.getAPNSToken();
+    } else {
       deviceToken = await FirebaseMessaging.instance.getToken();
-    // }
+    }
     if (deviceToken != null) {
       log('--------Device Token---------- $deviceToken--');
     }

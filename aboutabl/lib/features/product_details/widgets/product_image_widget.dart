@@ -328,6 +328,7 @@ class ProductImageWidget extends StatelessWidget {
                                               ),
                                             )
                                           : const SizedBox(),
+                                    if(productModel?.discount != null && productModel!.discount! > 0)
                                       Positioned(
                                           top: 10,
                                           left: 0,

@@ -60,21 +60,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-@pragma('vm:entry-point')
-Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
-  if (kDebugMode) {
-    print(
-        "onBackground: ${message.notification!.title}/${message.notification!.body}/${message.notification!.titleLocKey}");
-  }
-  // var androidInitialize = new AndroidInitializationSettings('notification_icon');
-  // var iOSInitialize = new IOSInitializationSettings();
-  // var initializationsSettings = new InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
-  // NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, true);
-}
-
-
 Future<void> main() async {
   if(kDebugMode) HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -95,7 +80,9 @@ Future<void> main() async {
   }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await di.init();
+    
   await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
 
   NotificationBody? body;
   try {
@@ -107,8 +94,6 @@ Future<void> main() async {
     // await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
     // FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   } catch (_) {}
-
-  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
 
   runApp(MultiProvider(
     providers: [
